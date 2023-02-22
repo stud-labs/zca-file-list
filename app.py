@@ -1,4 +1,4 @@
-from components import File, FileCollection
+from components import File, FileCollection, Image
 from utilities import register_utilities
 from registries import register_adapters
 from zope.component import getUtility
@@ -12,6 +12,7 @@ class Application:
         # f1 = File("passwd.txt", 1350)
         c.add(File("passwd.txt", 1350))
         c.add(File("exports", 355))
+        c.add(Image(100, 50))
 
     def print(self):
         for o in self.collection.list:

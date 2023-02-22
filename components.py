@@ -3,8 +3,15 @@ from zope.interface import implementer, providedBy
 from zope.component import adapter
 
 
+class FileBase:  # MixIn (Objective-C Category)
+    def __str__(self):
+        return "File '{}' of size {}".format(
+            self.name,
+            self.size,
+        )
+
 @implementer(IFile)
-class File:
+class File(FileBase):
 
     def __init__(self, name, size):
         self._name = name
@@ -18,11 +25,6 @@ class File:
     def name(self):
         return self._name
 
-    def __str__(self):
-        return "File '{}' of size {}".format(
-            self.name,
-            self.size,
-        )
 
 
 @implementer(IFileCollection)
@@ -61,7 +63,7 @@ class Image:
 
 @implementer(IFile)
 @adapter(IImage)
-class AdaperOfIImageToIFile:
+class AdaperOfIImageToIFile(FileBase):
 
     def __init__(self, context):
         self.context = context
@@ -74,4 +76,4 @@ class AdaperOfIImageToIFile:
     @property
     def size(self):
         c = self.context
-        return c.height * c.width * c.bpp / 8
+        return c.height * c.width * c.bpp // 8
