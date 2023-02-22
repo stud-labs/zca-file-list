@@ -1,8 +1,18 @@
-from components import FileCollection, File
-from interfaces import IFile, IFileCollection
+from components import FileCollection, File, Image
+from interfaces import IFile, IFileCollection, IImage
+from registries import register_adapters
+from utilities import register_utilities
 
+register_adapters()
+register_utilities()
 
 class TestComponents:
+
+    def setup_method(self):
+        self.coll = FileCollection()
+
+    def teardown_method(self):
+        del self.coll
 
     def test_test(self):
         pass
@@ -29,6 +39,26 @@ class TestComponents:
         a = c.remove(f2)
         assert a is f2
         assert len(c.list) == 1
+
+    def test_test_setup(self):
+        assert self.coll is not None
+
+    def test_IImage(self):
+        i = Image(100, 50)
+        IImage.providedBy(i)
+        IImage.implementedBy(Image)
+
+    def test_adapt_IImage_to_IFile(self):
+        i = Image(100, 50)
+        o = IFile(i)
+        assert IFile.providedBy(o)
+
+    def test_Add_Image_to_collection(self):
+        c = self.coll
+        i = Image(100, 50)
+        c.add(i)
+        assert len(c.list) == 1
+
 
 
 if __name__ == '__main__':

@@ -21,3 +21,12 @@ class ICollection(Interface):
 
 class IFileCollection(ICollection):
     pass
+
+
+class IImage(Interface):
+
+    height = Attribute("The height of image in pixels")
+
+    width = Attribute("The width of image in pixels")
+
+    bpp = Attribute("Bits per pixel")

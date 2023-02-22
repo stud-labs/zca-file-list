@@ -1,5 +1,7 @@
-from interfaces import IFileCollection, IFile
+from interfaces import IFileCollection, IFile, IImage
 from zope.interface import implementer, providedBy
+from zope.component import adapter
+
 
 @implementer(IFile)
 class File:
@@ -22,6 +24,7 @@ class File:
             self.size,
         )
 
+
 @implementer(IFileCollection)
 class FileCollection:
 
@@ -33,10 +36,42 @@ class FileCollection:
         return self._collection
 
     def add(self, obj):
-        assert IFile.providedBy(obj)
-        self._collection.append(obj)
+        o = IFile(obj)  # WORD(i);  (unsigned int) i
+        assert IFile.providedBy(o)
+        self._collection.append(o)
         return obj
 
     def remove(self, obj):
         self._collection.remove(obj)
         return obj
+
+
+@implementer(IImage)
+class Image:
+
+    def __init__(self, width, height, bpp=8):
+        self.width = width
+        self.height = height
+        self.bpp = bpp
+
+    def __str__(self):
+        return "Image w={} h={} bpp={}".format(self.width, self.height,
+                                               self.bpp)
+
+
+@implementer(IFile)
+@adapter(IImage)
+class AdaperOfIImageToIFile:
+
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def name(self):
+        c = self.context
+        return "Image{}x{}@{}".format(c.width, c.height, c.bpp)
+
+    @property
+    def size(self):
+        c = self.context
+        return c.height * c.width * c.bpp / 8
