@@ -1,0 +1,7 @@
+zope.component [zcml]
+
+# rdflib
+# mercurial
+#python-hglib
+# lxml
+# icc.ngs
